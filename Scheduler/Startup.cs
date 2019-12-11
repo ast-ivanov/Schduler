@@ -27,6 +27,16 @@ namespace Scheduler
             services.AddSingleton<IRepository<WorkTask>, TaskRepository>();
 
             ExecuteMappings();
+
+            services.AddSwaggerDocument(settings =>
+            {
+                settings.PostProcess = document =>
+                {
+                    document.Info.Version = "v1";
+                    document.Info.Title = "Scheduler";
+                    document.Info.Description = "Simple daily planner";
+                };
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,6 +53,9 @@ namespace Scheduler
             {
                 endpoints.MapControllers();
             });
+
+            app.UseOpenApi();
+            app.UseSwaggerUi3();
         }
 
         private void ExecuteMappings()

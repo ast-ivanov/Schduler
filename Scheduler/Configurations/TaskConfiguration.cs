@@ -9,6 +9,7 @@ namespace Scheduler.Configurations
         {
             BsonClassMap.RegisterClassMap<WorkTask>(cm =>
             {
+                cm.MapMember(t => t.Id).SetElementName("hrid");
                 cm.MapMember(t => t.Description).SetElementName("description");
                 cm.MapMember(t => t.CreatedDate).SetElementName("createdDate");
             });

@@ -8,10 +8,12 @@ namespace Scheduler.Services
 
     public interface IRepository<T>
     {
+        Task CreateAsync(T entity);
+
         Task<T> GetAsync(int id);
 
-        Task CreateAsync(T entity);
-        
+        Task<WorkTask> UpdateAsync(WorkTask task);
+
         Task DeleteAsync(int id);
     }
 
@@ -29,6 +31,18 @@ namespace Scheduler.Services
             var collection = GetCollection();
 
             await collection.InsertOneAsync(task);
+        }
+
+        public async Task<WorkTask> UpdateAsync(WorkTask task)
+        {
+            var collection = GetCollection();
+            
+            //todo Доделать конвертирование DateTime
+            UpdateDefinition<WorkTask> update = "{ $set: { description: \"" + task.Description + "\", createdDate: \"" + task.CreatedDate + "\" } }";
+            
+            var result = await collection.UpdateOneAsync(t => t.Id == task.Id, update);
+            
+            return await collection.Find(t => t.Id == task.Id).FirstAsync();
         }
 
         public async Task DeleteAsync(int id)

@@ -16,8 +16,7 @@ namespace Scheduler.Controllers
             _taskRepository = taskRepository;
         }
 
-        [HttpPost]
-        [Route("Create")]
+        [HttpPut]
         public async Task<IActionResult> Create(WorkTask task)
         {
             await _taskRepository.CreateAsync(task);
@@ -31,6 +30,23 @@ namespace Scheduler.Controllers
             var task = await _taskRepository.GetAsync(id);
 
             return Ok(task);
+        }
+
+        [HttpPatch]
+        public async Task<ActionResult<WorkTask>> Update(WorkTask task)
+        {
+            var result = await _taskRepository.UpdateAsync(task);
+
+            return Ok(result);
+        }
+
+        [HttpDelete]
+
+        public async Task<ActionResult<WorkTask>> Delete(int id)
+        {
+            await _taskRepository.DeleteAsync(id);
+
+            return Ok();
         }
     }
 }
