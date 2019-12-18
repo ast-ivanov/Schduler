@@ -1,11 +1,11 @@
 ﻿using Microsoft.Extensions.Configuration;
+using MongoDB.Bson;
 using MongoDB.Driver;
+using Scheduler.Entities;
 using System.Threading.Tasks;
 
 namespace Scheduler.Services
 {
-    using WorkTask = Entities.WorkTask;
-
     public interface IRepository<T>
     {
         Task CreateAsync(T entity);
@@ -36,9 +36,10 @@ namespace Scheduler.Services
         public async Task<WorkTask> UpdateAsync(WorkTask task)
         {
             var collection = GetCollection();
+
+            var jsonModel = task.ToJson();
             
-            //todo Доделать конвертирование DateTime
-            UpdateDefinition<WorkTask> update = "{ $set: { description: \"" + task.Description + "\", createdDate: \"" + task.CreatedDate + "\" } }";
+            UpdateDefinition<WorkTask> update = "{ $set: " + jsonModel + " }";
             
             var result = await collection.UpdateOneAsync(t => t.Id == task.Id, update);
             
